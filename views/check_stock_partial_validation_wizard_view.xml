@@ -1,0 +1,17 @@
+<odoo>
+    <record id="view_stock_partial_validate_wizard" model="ir.ui.view">
+        <field name="name">stock.partial.validate.wizard.form</field>
+        <field name="model">stock.partial.validate.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Confirmar Validación Parcial">
+                <group>
+                    <field name="message" readonly="1"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object" string="Crear orden parcial" class="btn-danger"/>
+                    <button name="action_cancel" type="object" string="Cancelar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

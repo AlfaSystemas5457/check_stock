@@ -1,0 +1,16 @@
+<odoo>
+    <record id="view_check_stock_no_stock" model="ir.ui.view">
+        <field name="name">check.stock.no.stock.form</field>
+        <field name="model">check.stock.no.stock</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="message" readonly="1"/>
+                </group>
+                <footer>
+                    <button name="return_action" type="object" string="Regresar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

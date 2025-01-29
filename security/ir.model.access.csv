@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_check_stock_check_stock,check_stock.check_stock,check_stock.model_stock_picking,,1,1,1,1
+access_stock_partial_validation_wizard,access_stock_partial_validation_wizard,check_stock.model_stock_partial_validate_wizard,,1,1,1,1
+access_stock_partial_validation_wizard,access_stock_partial_validation_wizard,check_stock.model_check_stock_no_stock,,1,1,1,1
