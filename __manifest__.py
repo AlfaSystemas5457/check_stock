@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Check stock",
+    'name': "Consultar existencias",
 
     'summary': """
     Verifica la existencia de productos""",
@@ -10,7 +10,7 @@
     """,
 
     'author': "DGV",
-    'website': "https://github.com/AlfaSystemas5457/modulos_odoo/tree/12.0/check_stock",
+    'website': "https://github.com/AlfaSystemas5457/check_stock",
     'category': 'Stock',
     'version': '1.1',
     'depends': ['stock'],

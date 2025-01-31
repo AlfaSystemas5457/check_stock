@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Odoo - Consultar existencias</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+    <section class="container py-5">
+        <div class="text-center">
+            <h1 class="fw-bold text-primary">Consultar existencias de productos</h1>
+            <p class="lead">Revisa las existencias de los productos antes de realizar la entrega de algún producto.</p>
+        </div>
+
+        <div class="row justify-content-center my-4">
+            <div class="col-md-8 text-center">
+                <h2 class="fw-semibold text-info">Compatible con Odoo Community 12.0</h2>
+            </div>
+        </div>
+
+        <div class="row justify-content-center my-4">
+            <div class="col-md-6 text-center">
+                <a href="https://github.com/AlfaSystemas5457/check_stock" target="_blank"
+                    class="btn btn-primary btn-lg">
+                    <span class="fs-4">Ver en GitHub</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="row justify-content-center my-5">
+            <div class="col-md-8">
+                <h2 class="fw-semibold text-dark">Funcionamiento</h2>
+                <p class="mt-3">En caso de que no exista stock suficiente, se procede a realizar una venta parcial.</p>
+                <p>Por ejemplo:</p>
+
+                <p>De este producto solo hay 10 en existencia.</p>
+                <div class="text-center">
+                    <img src="./assets/A la mano.png" alt="A la mano" class="img-fluid rounded shadow">
+                </div>
+
+                <p class="mt-3">Si se realiza una compra mayor a la existencia del producto, se podrá facturar.</p>
+                <div class="text-center">
+                    <img src="./assets/Ejemplo de compra.png" alt="Ejemplo de compra" class="img-fluid rounded shadow">
+                </div>
+
+                <p class="mt-3">Sin embargo, al momento de validar la entrega, aparecerá un error debido a la falta de
+                    existencias del producto.</p>
+                <div class="text-center">
+                    <img src="./assets/Validar pedido.png" alt="Validar pedido" class="img-fluid rounded shadow">
+                </div>
+
+                <p class="mt-3">Este es el error de validación. Odoo ajustará automáticamente la cantidad de producto
+                    disponible, permitiendo una entrega parcial.</p>
+                <div class="text-center">
+                    <img src="./assets/Error de validación.png" alt="Error de validación"
+                        class="img-fluid rounded shadow">
+                </div>
+
+                <p class="mt-3">Si no hay existencias del producto, aparecerá un error. En este caso,
+                    Odoo no ajustará automáticamente la cantidad en la entrega y no permitirá continuar hasta que haya
+                    stock disponible.</p>
+                <div class="text-center">
+                    <img src="./assets/Error de validación sin stock.png" alt="Error de validación sin stock"
+                        class="img-fluid rounded shadow">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
