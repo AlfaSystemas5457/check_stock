@@ -1,5 +1,10 @@
 from odoo import models, api, exceptions, fields
 
+class ButtonValidate(models.Model):
+    _inherit = 'stock.move'
+    
+    make_order = fields.Boolean(string="Validar?", default=True)
+
 class DeliveryOrderPartial(models.Model):
     _inherit = 'stock.picking'
     
@@ -24,12 +29,17 @@ class DeliveryOrderPartial(models.Model):
         productos_sin_stock = []
 
         for move_line in self.move_lines:
-            # Si no se ingreso de forma manual
-            if move_line.quantity_done != 0:
-                continue
+            
+            # si no se valida
+            if not move_line.make_order:
+                move_line.quantity_done = 0
+                
+            # Si se ingreso de forma manual
+            elif move_line.quantity_done != 0:
+                pass
 
             # si la cantidad disponible es mayo a la demanda
-            if move_line.product_id.qty_available >= move_line.product_uom_qty:
+            elif move_line.product_id.qty_available >= move_line.product_uom_qty:
                 move_line.quantity_done = move_line.product_uom_qty
             
             # si esta bajo pedido
@@ -42,8 +52,7 @@ class DeliveryOrderPartial(models.Model):
                     Producto: {move_line.product_id.display_name}
                     Estado: Bajo pedido (Cantidad ajustada)
                     Cantidad solicitada: {move_line.product_uom_qty}
-                    Cantidad disponible: {move_line.product_id.qty_available}
-                    Cantidad entregada: {move_line.quantity_done}""")
+                    Cantidad disponible: {move_line.product_id.qty_available}""")
                 # si el producto (desde inventario) disponible es menor o igual a la demenada y mayor que cero
                 elif move_line.product_id.qty_available <= move_line.product_uom_qty and move_line.product_id.qty_available > 0:
                     move_line.quantity_done = move_line.product_id.qty_available
@@ -52,8 +61,7 @@ class DeliveryOrderPartial(models.Model):
                     Producto: {move_line.product_id.display_name}
                     Estado: Bajo pedido (Cantidad ajustada)
                     Cantidad solicitada: {move_line.product_uom_qty}
-                    Cantidad disponible: {move_line.product_id.qty_available}
-                    Cantidad entregada: {move_line.quantity_done}""")
+                    Cantidad disponible: {move_line.product_id.qty_available}""")
                 # si no hay producto disponible (desde inventario)
                 else:
                     productos_sin_stock.append(
@@ -71,8 +79,7 @@ class DeliveryOrderPartial(models.Model):
                     Producto: {move_line.product_id.display_name}
                     Estado: Stock parcial (Cantidad ajustada)
                     Cantidad solicitada: {move_line.product_uom_qty}
-                    Cantidad disponible: {move_line.product_id.qty_available}
-                    Cantidad entregada: {move_line.quantity_done}""")
+                    Cantidad disponible: {move_line.product_id.qty_available}""")
 
             # si no hay stock disponible
             else:
@@ -82,6 +89,21 @@ class DeliveryOrderPartial(models.Model):
                     Estado: Sin stock (Eliminado de la entrega)
                     Cantidad solicitada: {move_line.product_uom_qty}
                     Cantidad disponible: {move_line.product_id.qty_available}""")
+        
+        total_quantity_done = sum(self.move_lines.mapped('quantity_done'))
+
+        if total_quantity_done == 0:
+            return {
+                'name': 'Sin cantidad procesada',
+                'type': 'ir.actions.act_window',
+                'res_model': 'check.stock.no.stock',
+                'view_mode': 'form',
+                'target': 'new',
+                'context': {
+                    'default_picking_id': self.id,
+                    'default_message': 'No se ha ingresado ninguna cantidad en los productos.',
+                },
+            }
         
         # vista de si ningun producto tiene stock
         if len(productos_sin_stock) == len(self.move_lines):

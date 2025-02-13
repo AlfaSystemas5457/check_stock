@@ -17,7 +17,8 @@
     'data': [
         'security/ir.model.access.csv',
         'views/check_stock_partial_validation_wizard_view.xml',
-        'views/check_stock_no_stock_view.xml'
+        'views/check_stock_no_stock_view.xml',
+        'views/button_parcial_stock_view.xml',
     ],
     'instalable': True
 }
