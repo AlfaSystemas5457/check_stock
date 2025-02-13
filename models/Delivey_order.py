@@ -90,8 +90,8 @@ class DeliveryOrderPartial(models.Model):
                     Cantidad solicitada: {move_line.product_uom_qty}
                     Cantidad disponible: {move_line.product_id.qty_available}""")
         
+        # Vista de ninguna cantidad
         total_quantity_done = sum(self.move_lines.mapped('quantity_done'))
-
         if total_quantity_done == 0:
             return {
                 'name': 'Sin cantidad procesada',
