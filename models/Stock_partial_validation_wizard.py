@@ -2,6 +2,7 @@ from odoo import models, fields
 
 class StockPartialValidateWizard(models.TransientModel):
     _name = 'stock.partial.validate.wizard'
+    _description = 'Mensaje de error'
 
     picking_id = fields.Many2one('stock.picking', string='Albarán', required=True, ondelete='cascade')
     message = fields.Text(string='Mensaje', readonly=True)

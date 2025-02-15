@@ -2,6 +2,7 @@ from odoo import api, models, exceptions, fields
 
 class CheckNoStock(models.Model):
     _name = 'check.stock.no.stock'
+    _description = 'Mensja de error personalizado'
     
     picking_id = fields.Many2one('stock.picking', string='Albaran', required=False, ondelete='cascade')
     message = fields.Text(string='Mensaje', readonly=True)
