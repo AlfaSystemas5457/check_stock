@@ -1,4 +1,4 @@
-from odoo import models, api, exceptions, fields
+from odoo import models, api, fields
 
 class ButtonValidate(models.Model):
     _inherit = 'stock.move'
@@ -35,7 +35,7 @@ class DeliveryOrderPartial(models.Model):
                 move_line.quantity_done = 0
                 
             # Si se ingreso de forma manual
-            elif move_line.quantity_done != 0:
+            elif move_line.quantity_done != 0 and move_line.product_id.qty_available > move_line.quantity_done:
                 pass
 
             # si la cantidad disponible es mayo a la demanda
@@ -90,21 +90,6 @@ class DeliveryOrderPartial(models.Model):
                     Cantidad solicitada: {move_line.product_uom_qty}
                     Cantidad disponible: {move_line.product_id.qty_available}""")
         
-        # Vista de ninguna cantidad
-        total_quantity_done = sum(self.move_lines.mapped('quantity_done'))
-        if total_quantity_done == 0:
-            return {
-                'name': 'Sin cantidad procesada',
-                'type': 'ir.actions.act_window',
-                'res_model': 'check.stock.no.stock',
-                'view_mode': 'form',
-                'target': 'new',
-                'context': {
-                    'default_picking_id': self.id,
-                    'default_message': 'No se ha ingresado ninguna cantidad en los productos.',
-                },
-            }
-        
         # vista de si ningun producto tiene stock
         if len(productos_sin_stock) == len(self.move_lines):
             mensaje = """
@@ -137,6 +122,21 @@ class DeliveryOrderPartial(models.Model):
                 'context': {
                     'default_picking_id': self.id,
                     'default_message': mensaje,
+                },
+            }
+        
+        # Vista de ninguna cantidad
+        total_quantity_done = sum(self.move_lines.mapped('quantity_done'))
+        if total_quantity_done == 0:
+            return {
+                'name': 'Sin cantidad procesada',
+                'type': 'ir.actions.act_window',
+                'res_model': 'check.stock.no.stock',
+                'view_mode': 'form',
+                'target': 'new',
+                'context': {
+                    'default_picking_id': self.id,
+                    'default_message': 'No se ha ingresado ninguna cantidad en los productos.',
                 },
             }
         
