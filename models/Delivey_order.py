@@ -22,6 +22,9 @@ class DeliveryOrderPartial(models.Model):
             self.is_done = False
             return super(DeliveryOrderPartial, self).action_done()
         
+        if self.picking_type_id.code != 'outgoing':
+            return super(DeliveryOrderPartial, self).button_validate()
+        
         # variables
         ruta_MTO = self.env.ref('stock.route_warehouse0_mto', raise_if_not_found=False)
         productos_bajo_pedido = []
@@ -35,7 +38,7 @@ class DeliveryOrderPartial(models.Model):
                 move_line.quantity_done = 0
                 
             # Si se ingreso de forma manual
-            elif move_line.quantity_done != 0 and move_line.product_id.qty_available > move_line.quantity_done:
+            elif move_line.quantity_done != 0 and move_line.product_id.qty_available >= move_line.quantity_done:
                 pass
 
             # si la cantidad disponible es mayo a la demanda
@@ -83,6 +86,7 @@ class DeliveryOrderPartial(models.Model):
 
             # si no hay stock disponible
             else:
+                move_line.quantity_done = 0
                 productos_sin_stock.append(
                     f"""
                     Producto: {move_line.product_id.display_name}
@@ -90,8 +94,10 @@ class DeliveryOrderPartial(models.Model):
                     Cantidad solicitada: {move_line.product_uom_qty}
                     Cantidad disponible: {move_line.product_id.qty_available}""")
         
+        total_quantity_done = sum(self.move_lines.mapped('quantity_done'))
+        
         # vista de si ningun producto tiene stock
-        if len(productos_sin_stock) == len(self.move_lines):
+        if len(productos_sin_stock) == len(self.move_lines) and total_quantity_done == 0:
             mensaje = """
                     Productos sin stock:
                     """ + "\n".join(productos_sin_stock)
@@ -104,6 +110,20 @@ class DeliveryOrderPartial(models.Model):
                 'context': {
                     'default_picking_id': self.id,
                     'default_message': mensaje,
+                },
+            }
+            
+        # Vista de ninguna cantidad
+        if total_quantity_done == 0:
+            return {
+                'name': 'Sin cantidad procesada',
+                'type': 'ir.actions.act_window',
+                'res_model': 'check.stock.no.stock',
+                'view_mode': 'form',
+                'target': 'new',
+                'context': {
+                    'default_picking_id': self.id,
+                    'default_message': 'No se ha ingresado ninguna cantidad en los productos.',
                 },
             }
         
@@ -122,21 +142,6 @@ class DeliveryOrderPartial(models.Model):
                 'context': {
                     'default_picking_id': self.id,
                     'default_message': mensaje,
-                },
-            }
-        
-        # Vista de ninguna cantidad
-        total_quantity_done = sum(self.move_lines.mapped('quantity_done'))
-        if total_quantity_done == 0:
-            return {
-                'name': 'Sin cantidad procesada',
-                'type': 'ir.actions.act_window',
-                'res_model': 'check.stock.no.stock',
-                'view_mode': 'form',
-                'target': 'new',
-                'context': {
-                    'default_picking_id': self.id,
-                    'default_message': 'No se ha ingresado ninguna cantidad en los productos.',
                 },
             }
         
