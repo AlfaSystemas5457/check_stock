@@ -34,7 +34,7 @@ class DeliveryOrderPartial(models.Model):
         for move_line in self.move_lines:
             
             # si no se valida
-            if not move_line.make_order or move_line.quantity_done == 0:
+            if not move_line.make_order:
                 move_line.quantity_done = 0
                 
             # Si se ingreso de forma manual
@@ -97,7 +97,8 @@ class DeliveryOrderPartial(models.Model):
         total_quantity_done = sum(self.move_lines.mapped('quantity_done'))
         
         # vista de si ningun producto tiene stock
-        if len(productos_sin_stock) == len(self.move_lines) and total_quantity_done == 0:
+        productos_con_orden = [x for x in self.move_lines.mapped('make_order') if x]
+        if len(productos_sin_stock) == len(productos_con_orden):
             mensaje = """
                     Productos sin stock:
                     """ + "\n".join(productos_sin_stock)
