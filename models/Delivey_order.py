@@ -34,7 +34,7 @@ class DeliveryOrderPartial(models.Model):
         for move_line in self.move_lines:
             
             # si no se valida
-            if not move_line.make_order:
+            if not move_line.make_order or move_line.quantity_done == 0:
                 move_line.quantity_done = 0
                 
             # Si se ingreso de forma manual
